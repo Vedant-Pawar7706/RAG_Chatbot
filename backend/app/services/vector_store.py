@@ -11,7 +11,7 @@ class FAISSVectorStore:
     def __init__(self):
         self.index_path = settings.absolute_faiss_index_path
         self.metadata_path = settings.absolute_faiss_metadata_path
-        self.dimension = 384
+        self.dimension = embedder.dimension
         self.index = None
         self.metadata: List[Dict[str, Any]] = []
         self._load_or_create()
@@ -20,11 +20,13 @@ class FAISSVectorStore:
         if os.path.exists(self.index_path) and os.path.exists(self.metadata_path):
             try:
                 self.index = faiss.read_index(self.index_path)
+                if self.index.d != self.dimension:
+                    raise ValueError(f"FAISS index dimension mismatch: found {self.index.d}, expected {self.dimension}")
                 with open(self.metadata_path, "rb") as f:
                     self.metadata = pickle.load(f)
                 return
             except Exception as e:
-                print(f"Error loading FAISS index: {e}, creating new index.")
+                print(f"Loading FAISS index: {e}. Creating new index with dimension {self.dimension}.")
 
         self.index = faiss.IndexFlatIP(self.dimension)
         self.metadata = []
