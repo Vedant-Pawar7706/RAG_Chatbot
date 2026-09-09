@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str = ""
 
     EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
-    GEMINI_MODEL_NAME: str = "gemini-2.5-flash"
+    GEMINI_MODEL_NAME: str = "gemini-3.6-flash"
 
     DOCUMENTS_DIR: str = "documents"
     VECTORSTORE_DIR: str = "vectorstore"

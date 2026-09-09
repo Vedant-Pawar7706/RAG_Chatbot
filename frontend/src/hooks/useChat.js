@@ -46,7 +46,14 @@ export function useChat() {
 
   useEffect(() => {
     loadInitialData();
-  }, [loadInitialData]);
+
+    // Auto-reconnect interval if backend was offline or to sync stats
+    const interval = setInterval(() => {
+      loadInitialData();
+    }, isServerOnline ? 20000 : 4000);
+
+    return () => clearInterval(interval);
+  }, [loadInitialData, isServerOnline]);
 
   const clearNotifications = () => {
     setError(null);

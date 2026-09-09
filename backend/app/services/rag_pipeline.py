@@ -1,4 +1,5 @@
 import os
+import asyncio
 from typing import Dict, Any, List
 from fastapi import UploadFile
 from app.core.config import settings
@@ -24,12 +25,12 @@ class RAGPipeline:
         with open(save_path, "wb") as f:
             f.write(contents)
 
-        # Load & chunk document
-        raw_docs = load_document(save_path, sanitized_name)
-        chunks = chunker.split_documents(raw_docs)
+        def _index_worker():
+            raw_docs = load_document(save_path, sanitized_name)
+            chunks = chunker.split_documents(raw_docs)
+            return vector_store.add_chunks(chunks)
 
-        # Embed & index chunks in FAISS
-        indexed_count = vector_store.add_chunks(chunks)
+        indexed_count = await asyncio.to_thread(_index_worker)
 
         return {
             "filename": sanitized_name,

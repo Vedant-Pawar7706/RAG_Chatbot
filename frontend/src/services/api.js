@@ -2,11 +2,11 @@ import axios from 'axios';
 
 // Create Axios instance with fallback configuration
 const API = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: 60000,
 });
 
 // Response interceptor to handle errors gracefully
@@ -23,11 +23,11 @@ API.interceptors.response.use(
 );
 
 export const getHealthStatus = async () => {
-  return await API.get('/');
+  return await API.get('/', { timeout: 10000 });
 };
 
 export const getDocuments = async () => {
-  return await API.get('/documents');
+  return await API.get('/documents', { timeout: 15000 });
 };
 
 export const uploadDocument = async (file) => {
@@ -37,6 +37,7 @@ export const uploadDocument = async (file) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    timeout: 180000, // 3 minutes for large documents embedding
   });
 };
 
@@ -49,7 +50,7 @@ export const clearKnowledgeBase = async () => {
 };
 
 export const sendChatMessage = async (query) => {
-  return await API.post('/chat', { query });
+  return await API.post('/chat', { query }, { timeout: 90000 });
 };
 
 export default API;
