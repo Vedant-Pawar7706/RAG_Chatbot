@@ -37,9 +37,18 @@ app = FastAPI(
 )
 
 # Configure CORS Middleware
+configured_origins = list(settings.cors_origins_list)
+if "*" in configured_origins:
+    cors_origins = ["*"]
+else:
+    if "https://docmind-frontend-9rkj.onrender.com" not in configured_origins:
+        configured_origins.append("https://docmind-frontend-9rkj.onrender.com")
+    cors_origins = configured_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origins=cors_origins,
+    allow_origin_regex=getattr(settings, "CORS_ORIGIN_REGEX", None),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

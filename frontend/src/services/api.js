@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-// Create Axios instance with fallback configuration
+// Create Axios instance with fallback configuration and normalized base URL
+const rawBaseURL = import.meta.env.VITE_API_URL || '/api';
+const baseURL = rawBaseURL.endsWith('/') && rawBaseURL.length > 1 ? rawBaseURL.slice(0, -1) : rawBaseURL;
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,11 +36,11 @@ API.interceptors.response.use(
 
 // --- Health & Document Management ---
 export const getHealthStatus = async () => {
-  return await API.get('/', { timeout: 10000 });
+  return await API.get('/', { timeout: 30000 });
 };
 
 export const getDocuments = async () => {
-  return await API.get('/documents', { timeout: 15000 });
+  return await API.get('/documents', { timeout: 30000 });
 };
 
 export const uploadDocument = async (file) => {

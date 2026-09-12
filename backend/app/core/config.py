@@ -21,7 +21,8 @@ class Settings(BaseSettings):
     TOP_K_RESULTS: int = 5
     MAX_UPLOAD_SIZE_MB: int = 10
 
-    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000,http://localhost:5174,http://127.0.0.1:5174"
+    CORS_ORIGINS: str = "https://docmind-frontend-9rkj.onrender.com,http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000,http://localhost:5174,http://127.0.0.1:5174"
+    CORS_ORIGIN_REGEX: str = r"https://.*\.onrender\.com|https://.*\.vercel\.app|https://.*\.netlify\.app|http://localhost(:\d+)?|http://127\.0\.0\.1(:\d+)?"
 
     model_config = SettingsConfigDict(
         env_file=".env",

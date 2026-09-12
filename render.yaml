@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: docmind-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://docmind-frontend-9rkj.onrender.com,http://localhost:5173
+
+  - type: web
+    name: docmind-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://docmind-backend-vcfu.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
