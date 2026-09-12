@@ -6,6 +6,7 @@ import {
   Plus,
   X,
   Database,
+  BarChart3,
 } from 'lucide-react';
 import DocumentCard from './DocumentCard';
 
@@ -13,6 +14,7 @@ export default function Sidebar({
   documents,
   totalChunks,
   onOpenUpload,
+  onOpenMetrics,
   onDeleteDocument,
   onClearKnowledgeBase,
   isClearing,
@@ -46,8 +48,8 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Upload Button */}
-      <div className="p-4 border-b border-emerald-500/15">
+      {/* Action Buttons: Upload & View Metrics */}
+      <div className="p-4 border-b border-emerald-500/15 space-y-2">
         <button
           onClick={onOpenUpload}
           className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-bold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/25 transition-all active:scale-95"
@@ -55,6 +57,16 @@ export default function Sidebar({
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>Upload Document</span>
         </button>
+
+        {onOpenMetrics && (
+          <button
+            onClick={onOpenMetrics}
+            className="w-full py-1.5 px-3 rounded-xl bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/25 text-emerald-300 hover:text-emerald-100 font-semibold text-xs flex items-center justify-center space-x-1.5 transition-all"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Document Metrics & Stats</span>
+          </button>
+        )}
       </div>
 
       {/* Search Input */}

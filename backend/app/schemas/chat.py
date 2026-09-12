@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
     query: str = Field(..., min_length=1, description="User question or prompt")
+    persona: Optional[str] = Field(default="analyst", description="AI Persona: analyst, executive, legal, architect")
+    session_id: Optional[str] = Field(default=None, description="Optional chat session identifier")
 
 
 class Citation(BaseModel):
@@ -18,3 +20,4 @@ class ChatResponse(BaseModel):
     answer: str
     citations: List[Citation]
     retrieved_chunks_count: int
+    suggested_followups: List[str] = Field(default_factory=list, description="Smart follow-up suggestions")

@@ -1,3 +1,3 @@
 """
-RAG Chatbot Backend Application Package
+DocMind AI Backend Application Package
 """

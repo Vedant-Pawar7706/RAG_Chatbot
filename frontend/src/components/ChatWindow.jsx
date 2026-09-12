@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 import Typing from './Typing';
-import { FileText, Bot, HelpCircle, ShieldCheck, Sparkles } from 'lucide-react';
+import { FileText, Bot, HelpCircle, ShieldCheck, Sparkles, Share2, MessageSquare } from 'lucide-react';
 
 export default function ChatWindow({
   messages,
@@ -9,6 +9,9 @@ export default function ChatWindow({
   onSendMessage,
   onOpenUpload,
   totalDocuments,
+  onSelectCitation,
+  onSendFollowup,
+  onOpenExport,
 }) {
   const messagesEndRef = useRef(null);
 
@@ -54,7 +57,7 @@ export default function ChatWindow({
             <p className="text-sm md:text-base text-emerald-300/80 max-w-xl mx-auto leading-relaxed">
               {totalDocuments > 0
                 ? `You have ${totalDocuments} document(s) indexed in your FAISS vector store. Pick a prompt below or ask anything.`
-                : 'Upload your PDF, DOCX, or TXT documents to power your RAG Chatbot.'}
+                : 'Upload your PDF, DOCX, or TXT documents to power DocMind AI.'}
             </p>
           </div>
 
@@ -93,8 +96,31 @@ export default function ChatWindow({
       ) : (
         /* Messages list stream - Increased Width & Sleek Height */
         <div className="max-w-4xl mx-auto w-full space-y-4">
+          {/* Thread action bar */}
+          <div className="flex items-center justify-between px-1 pb-1.5 border-b border-emerald-500/15 text-xs text-emerald-400/80">
+            <span className="font-semibold flex items-center gap-1.5 text-emerald-300/90 text-[11px]">
+              <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+              Active Discussion ({messages.length} message{messages.length === 1 ? '' : 's'})
+            </span>
+            {onOpenExport && (
+              <button
+                onClick={onOpenExport}
+                className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/20 text-emerald-300 hover:text-emerald-100 transition-all font-semibold text-[11px] active:scale-95"
+                title="Export this conversation thread"
+              >
+                <Share2 className="w-3 h-3 text-emerald-400" />
+                <span>Export Chat</span>
+              </button>
+            )}
+          </div>
+
           {messages.map((msg) => (
-            <ChatMessage key={msg.id} message={msg} />
+            <ChatMessage
+              key={msg.id}
+              message={msg}
+              onSelectCitation={onSelectCitation}
+              onSendFollowup={onSendFollowup}
+            />
           ))}
 
           {isLoading && (

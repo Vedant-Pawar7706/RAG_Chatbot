@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "RAG-Chatbot"
+    APP_NAME: str = "DocMind AI"
     DEBUG: bool = True
     GOOGLE_API_KEY: str = ""
 

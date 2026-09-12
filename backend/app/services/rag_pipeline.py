@@ -38,16 +38,52 @@ class RAGPipeline:
             "total_vectors": vector_store.get_total_chunks()
         }
 
-    def answer_query(self, query: str) -> ChatResponse:
+    def answer_query(self, query: str, persona: str = "analyst") -> ChatResponse:
         chunks, citations = retriever.retrieve_context(query)
-        prompt = build_system_prompt(query, chunks)
+        prompt = build_system_prompt(query, chunks, persona=persona)
         answer = llm_service.generate_response(prompt)
+
+        # Generate intelligent follow-up suggestions
+        suggested_followups = []
+        if chunks and len(answer) > 20:
+            try:
+                followup_prompt = f"""Based on this user question and document-grounded answer:
+Question: {query}
+Answer summary: {answer[:500]}
+
+Generate exactly 3 concise, natural follow-up questions (under 12 words each) that a user would likely ask next.
+Return ONLY 3 bullet lines starting with '-', no other text."""
+                raw_followups = llm_service.generate_response(followup_prompt)
+                for line in raw_followups.strip().split("\n"):
+                    clean = line.strip().lstrip("-*0123456789.) ").strip()
+                    if clean and len(clean) > 5 and len(clean) < 100:
+                        suggested_followups.append(clean)
+                    if len(suggested_followups) >= 3:
+                        break
+            except Exception as e:
+                pass
+
+        # Fallback suggestions if none were generated or no documents loaded
+        if not suggested_followups:
+            if chunks:
+                suggested_followups = [
+                    f"Can you explain more details from {citations[0].source if citations else 'the sources'}?",
+                    "What are the most critical risks or limitations mentioned?",
+                    "Provide a bulleted executive summary of this section."
+                ]
+            else:
+                suggested_followups = [
+                    "How do I upload and index documents in DocMind AI?",
+                    "What file formats (PDF, DOCX, TXT) are supported?",
+                    "How does the zero-hallucination guarantee work?"
+                ]
 
         return ChatResponse(
             query=query,
             answer=answer,
             citations=citations,
-            retrieved_chunks_count=len(chunks)
+            retrieved_chunks_count=len(chunks),
+            suggested_followups=suggested_followups[:3]
         )
 
 

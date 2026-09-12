@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api import upload, chat, documents, delete, clear
+from app.api import upload, chat, documents, delete, clear, auth, insights
 from app.services.vector_store import vector_store
 
 # Configure structured logging
@@ -11,7 +11,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-logger = logging.getLogger("rag_chatbot")
+logger = logging.getLogger("docmind_ai")
 
 
 @asynccontextmanager
@@ -19,17 +19,17 @@ async def lifespan(app: FastAPI):
     """
     Application startup and shutdown lifespan handler.
     """
-    logger.info("Initializing RAG Chatbot Backend...")
+    logger.info("Initializing DocMind AI Backend...")
     logger.info(f"Documents directory: {settings.absolute_documents_dir}")
     logger.info(f"Vectorstore directory: {settings.absolute_vectorstore_dir}")
     logger.info(f"Active FAISS total vectors: {vector_store.get_total_chunks()}")
     yield
-    logger.info("Shutting down RAG Chatbot Backend.")
+    logger.info("Shutting down DocMind AI Backend.")
 
 
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Production-Ready Retrieval-Augmented Generation (RAG) Chatbot API powered by FastAPI, FAISS, SentenceTransformers, and Google Gemini 2.5 Flash.",
+    description="Production-Ready DocMind AI - Retrieval-Augmented Generation (RAG) API powered by FastAPI, FAISS, SentenceTransformers, and Google Gemini 2.5 Flash.",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
@@ -51,6 +51,8 @@ app.include_router(chat.router)
 app.include_router(documents.router)
 app.include_router(delete.router)
 app.include_router(clear.router)
+app.include_router(auth.router)
+app.include_router(insights.router)
 
 
 @app.get("/", tags=["Health Check"])

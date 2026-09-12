@@ -1,7 +1,7 @@
 import logging
 from app.core.config import settings
 
-logger = logging.getLogger("rag_chatbot.llm")
+logger = logging.getLogger("docmind_ai.llm")
 
 
 class GeminiLLMService:

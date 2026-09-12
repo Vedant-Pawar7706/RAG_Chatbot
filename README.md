@@ -1,6 +1,6 @@
-# Production-Ready RAG Chatbot
+# Production-Ready DocMind AI
 
-An intelligent, production-ready Retrieval-Augmented Generation (RAG) Chatbot application built with **FastAPI**, **FAISS Vector Store**, **Sentence Transformers**, **Google Gemini 2.5 Flash**, and **React + Vite + Tailwind CSS**.
+An intelligent, production-ready Retrieval-Augmented Generation (RAG) platform named **DocMind AI** built with **FastAPI**, **FAISS Vector Store**, **Sentence Transformers**, **Google Gemini 2.5 Flash**, and **React + Vite + Tailwind CSS**.
 
 ![Architecture Diagram](https://img.shields.io/badge/Stack-FastAPI%20%7C%20FAISS%20%7C%20Gemini%202.5%20Flash%20%7C%20React%2018-blue)
 
@@ -8,6 +8,11 @@ An intelligent, production-ready Retrieval-Augmented Generation (RAG) Chatbot ap
 
 ## 🌟 Key Features
 
+- 🔐 **Authentication & User Management**: Full login, registration, and 1-click instant demo access with user profile & subscription tier management.
+- 💬 **Multi-Session Chat Threads**: Create, rename, switch between, and persist multiple conversation analysis threads.
+- 🎭 **Adaptive AI Personas**: Real-time role switching between **Research Analyst**, **Executive Brief**, **Legal Auditor**, and **Tech Architect**.
+- 📊 **Document Intelligence & Auto-Summary**: Instant Gemini-powered executive briefings, key takeaways, and quantitative document metrics (word counts, reading times, chunk distributions).
+- 📥 **Report Export**: One-click conversation report generation and downloads in **Markdown (`.md`)** and **JSON (`.json`)** formats.
 - 📄 **Multi-Format Document Support**: Upload **PDF**, **DOCX**, and **TXT** files.
 - ✂️ **Automatic Extraction & Chunking**: Uses `RecursiveCharacterTextSplitter` preserving page metadata and chunk IDs.
 - 🧠 **Vector Embeddings**: High-performance embeddings generated via `SentenceTransformer('all-MiniLM-L6-v2')`.
@@ -22,11 +27,13 @@ An intelligent, production-ready Retrieval-Augmented Generation (RAG) Chatbot ap
 ## 📁 Project Folder Structure
 
 ```
-RAG-Chatbot/
+DocMind-AI/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── chat.py           # POST /chat endpoint
+│   │   │   ├── auth.py           # POST /auth/login, /auth/register, /auth/demo, GET /auth/me
+│   │   │   ├── insights.py       # GET /insights/summary, GET /insights/stats
+│   │   │   ├── chat.py           # POST /chat endpoint (with persona support)
 │   │   │   ├── upload.py         # POST /upload endpoint
 │   │   │   ├── delete.py         # DELETE /documents/{filename} endpoint
 │   │   │   ├── documents.py      # GET /documents endpoint
@@ -39,12 +46,13 @@ RAG-Chatbot/
 │   │   │   ├── embedder.py       # SentenceTransformer model wrapper
 │   │   │   ├── vector_store.py   # FAISS lifecycle & metadata management
 │   │   │   ├── retriever.py      # Context search & citation builder
-│   │   │   ├── prompt.py         # System prompt template builder
+│   │   │   ├── prompt.py         # System prompt template & persona builder
 │   │   │   ├── llm.py            # Gemini 2.5 Flash API client
 │   │   │   └── rag_pipeline.py   # End-to-end RAG orchestrator
 │   │   ├── utils/
 │   │   │   └── helper.py         # File validation & sanitization
 │   │   ├── schemas/
+│   │   │   ├── auth.py           # Authentication pydantic schemas
 │   │   │   ├── upload.py         # Pydantic upload models
 │   │   │   └── chat.py           # Pydantic chat & citation models
 │   │   └── main.py               # FastAPI application entrypoint
@@ -57,7 +65,13 @@ RAG-Chatbot/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Navbar.jsx        # Top navigation bar
+│   │   │   ├── Navbar.jsx        # Top navigation bar with Persona & Profile
+│   │   │   ├── AuthModal.jsx     # Login, registration & 1-click demo modal
+│   │   │   ├── UserProfileMenu.jsx # User avatar dropdown & subscription tier
+│   │   │   ├── ChatSessionsDrawer.jsx # Multi-session thread drawer
+│   │   │   ├── PersonaSelector.jsx # AI Persona switcher pills
+│   │   │   ├── DocumentInsightsModal.jsx # Auto-summary & document statistics
+│   │   │   ├── ExportModal.jsx   # Markdown & JSON conversation exporter
 │   │   │   ├── Sidebar.jsx       # Document list & upload sidebar
 │   │   │   ├── ChatWindow.jsx    # Chat message container
 │   │   │   ├── ChatMessage.jsx   # Message bubble with Markdown & citations
@@ -167,7 +181,7 @@ RAG-Chatbot/
    - Click **"Process & Index Files"**.
    - The backend automatically extracts text, splits it into chunks, generates vector embeddings using `all-MiniLM-L6-v2`, and persists the vectors into `FAISS`.
 
-2. **Query the Chatbot**:
+2. **Query DocMind AI**:
    - Type your question into the chat input bar and press **Enter** (or click the send button).
    - The system retrieves the top 5 most relevant document chunks from FAISS, builds a strict context prompt, and asks Gemini 2.5 Flash for the answer.
    - Expand the **"Sources"** button below any response to inspect the exact document name, page number, confidence match score, and text snippet used.
